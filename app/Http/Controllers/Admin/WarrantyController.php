@@ -29,7 +29,21 @@ class WarrantyController extends Controller
         
         $warranties = $query->orderByDesc('created_at')->paginate(20);
         
-        return view('admin.warranties.index', compact('warranties'));
+        // Tính toán stats từ toàn bộ dữ liệu (không phân trang)
+        $statsQuery = Warranty::query();
+        if ($request->filled('serial_search')) {
+            $statsQuery->where('serial_number', 'LIKE', "%{$request->serial_search}%");
+        }
+        
+        $stats = [
+            'total' => $statsQuery->count(),
+            'active' => (clone $statsQuery)->where('status', 'active')
+                ->where('warranty_end_date', '>=', now()->toDateString())
+                ->count(),
+            'expired' => (clone $statsQuery)->where('status', 'expired')->count(),
+        ];
+        
+        return view('admin.warranties.index', compact('warranties', 'stats'));
     }
 
     public function create()
@@ -263,6 +277,33 @@ class WarrantyController extends Controller
             $msg .= ' (xem log/lỗi chi tiết nếu cần)';
         }
         return back()->with('success', $msg);
+    }
+
+    // Xóa tất cả bảo hành
+    public function destroyAll(Request $request)
+    {
+        // Xác nhận lại bằng text để đảm bảo an toàn
+        $confirmText = $request->input('confirm_text');
+        
+        if ($confirmText !== 'XÓA TẤT CẢ') {
+            return back()->with('error', 'Vui lòng nhập chính xác "XÓA TẤT CẢ" để xác nhận!');
+        }
+
+        try {
+            $count = Warranty::count();
+            
+            // Xóa tất cả dữ liệu liên quan trước
+            \DB::table('warranty_statuses')->delete();
+            \DB::table('warranty_claims')->delete();
+            
+            // Xóa tất cả bảo hành
+            Warranty::query()->delete();
+            
+            return redirect()->route('admin.warranties.index')
+                ->with('success', "Đã xóa thành công {$count} bảo hành và tất cả dữ liệu liên quan!");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
 

@@ -22,10 +22,9 @@
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal" style="border-radius: 12px; padding: 12px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);">
                 <i class="bi bi-upload me-2"></i> Import Excel
             </button>
-            
-
-
-
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal" style="border-radius: 12px; padding: 12px 24px; font-weight: 600; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
+                <i class="bi bi-trash me-2"></i> Xóa tất cả
+            </button>
         </div>
     </div>
 
@@ -37,7 +36,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="text-white-50 mb-1" style="font-size: 0.9em; font-weight: 600;">TỔNG BẢO HÀNH</div>
-                            <div class="h3 mb-0 font-weight-bold">{{ $warranties->total() }}</div>
+                            <div class="h3 mb-0 font-weight-bold">{{ $stats['total'] ?? $warranties->total() }}</div>
                         </div>
                         <div class="text-white-50">
                             <i class="bi bi-shield-check" style="font-size: 2.5em;"></i>
@@ -54,7 +53,7 @@
                         <div>
                             <div class="text-white-50 mb-1" style="font-size: 0.9em; font-weight: 600;">CÒN HIỆU LỰC</div>
                             <div class="h3 mb-0 font-weight-bold">
-                                {{ $warranties->where('status', 'active')->where('warranty_end_date', '>=', now()->toDateString())->count() }}
+                                {{ $stats['active'] ?? 0 }}
                             </div>
                         </div>
                         <div class="text-white-50">
@@ -72,7 +71,7 @@
                         <div>
                             <div class="text-white-50 mb-1" style="font-size: 0.9em; font-weight: 600;">HẾT HẠN</div>
                             <div class="h3 mb-0 font-weight-bold">
-                                {{ $warranties->where('status', 'expired')->count() }}
+                                {{ $stats['expired'] ?? 0 }}
                             </div>
                         </div>
                         <div class="text-white-50">
@@ -144,6 +143,13 @@
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -273,7 +279,56 @@
 
             <!-- Pagination -->
             <div class="d-flex justify-content-center mt-4">
-                {{ $warranties->appends(request()->query())->links() }}
+                {{ $warranties->appends(request()->query())->links('pagination::bootstrap-4') }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Modal -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-labelledby="deleteAllModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 16px 16px 0 0;">
+                <h5 class="modal-title fw-bold" id="deleteAllModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Xác nhận xóa tất cả bảo hành
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-danger mb-3">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Cảnh báo nguy hiểm!</h6>
+                    <p class="mb-0">Bạn sắp xóa <strong>TẤT CẢ</strong> bảo hành trong hệ thống. Hành động này <strong>KHÔNG THỂ HOÀN TÁC</strong>!</p>
+                </div>
+                <p class="mb-3">Tổng số bảo hành sẽ bị xóa: <strong class="text-danger">{{ $stats['total'] ?? $warranties->total() }}</strong></p>
+                <p class="mb-3">Vui lòng nhập <strong>"XÓA TẤT CẢ"</strong> vào ô bên dưới để xác nhận:</p>
+                <form action="{{ route('admin.warranties.destroyAll') }}" method="POST" id="deleteAllForm">
+                    @csrf
+                    @method('DELETE')
+                    <div class="mb-3">
+                        <input type="text" 
+                               class="form-control" 
+                               id="confirmDeleteInput" 
+                               name="confirm_text" 
+                               placeholder="Nhập: XÓA TẤT CẢ"
+                               required
+                               autocomplete="off"
+                               style="border-radius: 12px; padding: 12px; font-size: 1em; border: 2px solid #dc3545;">
+                        <small class="text-muted">Vui lòng nhập chính xác: <strong>XÓA TẤT CẢ</strong></small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal" style="border-radius: 12px; padding: 12px; font-weight: 600;">
+                            <i class="bi bi-x-circle me-2"></i> Hủy
+                        </button>
+                        <button type="submit" 
+                                class="btn btn-danger flex-fill" 
+                                id="confirmDeleteBtn"
+                                disabled
+                                style="border-radius: 12px; padding: 12px; font-weight: 600;">
+                            <i class="bi bi-trash me-2"></i> Xóa tất cả
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -331,15 +386,77 @@ $(document).ready(function() {
         }
     });
     
-    // DataTable với tùy chỉnh cho tìm kiếm
-    $('#dataTable').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
-        },
-        "pageLength": 25,
-        "order": [[0, "desc"]],
-        "searching": false, // Tắt tìm kiếm của DataTable vì đã có form tìm kiếm riêng
-        "info": false // Ẩn thông tin "Showing X to Y of Z entries"
+    // Không dùng DataTable vì đã có Laravel pagination
+    // DataTable sẽ xung đột với server-side pagination
+    
+    // Xử lý xác nhận xóa tất cả - dùng cả jQuery và vanilla JS để đảm bảo hoạt động
+    function checkDeleteConfirmation() {
+        const input = document.getElementById('confirmDeleteInput');
+        const button = document.getElementById('confirmDeleteBtn');
+        
+        if (!input || !button) return;
+        
+        const confirmText = input.value.trim();
+        const requiredText = 'XÓA TẤT CẢ';
+        
+        if (confirmText === requiredText) {
+            button.disabled = false;
+            button.classList.remove('disabled');
+        } else {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
+    }
+    
+    // Dùng event delegation với jQuery
+    $(document).on('input keyup paste change', '#confirmDeleteInput', function() {
+        checkDeleteConfirmation();
+    });
+    
+    // Dùng vanilla JS như backup
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'confirmDeleteInput') {
+            checkDeleteConfirmation();
+        }
+    });
+    
+    // Khi modal được hiển thị, đảm bảo input được focus và reset
+    $('#deleteAllModal').on('shown.bs.modal', function() {
+        const input = document.getElementById('confirmDeleteInput');
+        const button = document.getElementById('confirmDeleteBtn');
+        if (input) {
+            input.value = '';
+            input.focus();
+        }
+        if (button) {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
+    });
+    
+    // Reset khi modal đóng
+    $('#deleteAllModal').on('hidden.bs.modal', function() {
+        const input = document.getElementById('confirmDeleteInput');
+        const button = document.getElementById('confirmDeleteBtn');
+        if (input) input.value = '';
+        if (button) {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
+    });
+    
+    // Xác nhận lại trước khi submit
+    $(document).on('submit', '#deleteAllForm', function(e) {
+        const confirmText = document.getElementById('confirmDeleteInput').value.trim();
+        const requiredText = 'XÓA TẤT CẢ';
+        
+        if (confirmText !== requiredText) {
+            e.preventDefault();
+            alert('Vui lòng nhập chính xác "XÓA TẤT CẢ" để xác nhận!');
+            return false;
+        }
+        
+        return confirm('Bạn có CHẮC CHẮN muốn xóa TẤT CẢ bảo hành? Hành động này KHÔNG THỂ HOÀN TÁC!');
     });
 });
 </script>
