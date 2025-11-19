@@ -42,6 +42,7 @@
                                 <label class="fw-bold text-muted">Số seri:</label>
                                 <p class="mb-0 fs-5">{{ $warranty->serial_number }}</p>
                             </div>
+                            @if($warranty->product)
                             <div class="mb-3">
                                 <label class="fw-bold text-muted">Sản phẩm:</label>
                                 <div class="d-flex align-items-center">
@@ -56,14 +57,19 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
+                            @if($warranty->customer_name)
                             <div class="mb-3">
                                 <label class="fw-bold text-muted">Khách hàng:</label>
                                 <p class="mb-0 fs-5">{{ $warranty->customer_name }}</p>
                             </div>
+                            @endif
+                            @if($warranty->customer_phone)
                             <div class="mb-3">
                                 <label class="fw-bold text-muted">Số điện thoại:</label>
                                 <p class="mb-0 fs-5">{{ $warranty->customer_phone }}</p>
                             </div>
+                            @endif
                             @if($warranty->customer_email)
                             <div class="mb-3">
                                 <label class="fw-bold text-muted">Email:</label>

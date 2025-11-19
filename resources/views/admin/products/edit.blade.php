@@ -9,6 +9,25 @@
     </div>
     <div class="card shadow-sm">
         <div class="card-body">
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>Có lỗi xảy ra!</h5>
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            
             <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -19,22 +38,31 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" required value="{{ old('name', $product->name) }}">
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" required value="{{ old('name', $product->name) }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Danh mục <span class="text-danger">*</span></label>
-                        <select name="category_id" class="form-select" required>
+                        <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
                             <option value="">-- Chọn danh mục --</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" @if(old('category_id', $product->category_id) == $cat->id) selected @endif>{{ $cat->name }}</option>
                             @endforeach
                         </select>
+                        @error('category_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Giá bán <span class="text-danger">*</span></label>
-                        <input type="number" name="price" class="form-control" required value="{{ old('price', $product->price) }}">
+                        <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" required value="{{ old('price', $product->price) }}">
+                        @error('price')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Giảm giá (%)</label>

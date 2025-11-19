@@ -187,6 +187,7 @@
                                 </div>
                             </td>
                             <td style="border: none; padding: 16px 12px;">
+                                @if($warranty->product)
                                 <div class="d-flex align-items-center w-100">
                                     @if($warranty->product->image)
                                         <img src="{{ asset('images/products/' . $warranty->product->image) }}" 
@@ -198,15 +199,26 @@
                                         <br><small class="text-muted" style="font-size: 0.9em;">{{ $warranty->product->category->name ?? '' }}</small>
                                     </div>
                                 </div>
+                                @else
+                                <span class="text-muted">-</span>
+                                @endif
                             </td>
                             <td style="border: none; padding: 16px 12px;">
+                                @if($warranty->customer_name || $warranty->customer_phone || $warranty->customer_email)
                                 <div class="d-flex flex-column">
-                                    <strong style="color: #2c3e50; font-size: 1.1em;">{{ $warranty->customer_name }}</strong>
-                                    <small class="text-muted" style="font-size: 0.9em;">{{ $warranty->customer_phone }}</small>
+                                    @if($warranty->customer_name)
+                                        <strong style="color: #2c3e50; font-size: 1.1em;">{{ $warranty->customer_name }}</strong>
+                                    @endif
+                                    @if($warranty->customer_phone)
+                                        <small class="text-muted" style="font-size: 0.9em;">{{ $warranty->customer_phone }}</small>
+                                    @endif
                                     @if($warranty->customer_email)
                                         <small class="text-muted" style="font-size: 0.9em;">{{ $warranty->customer_email }}</small>
                                     @endif
                                 </div>
+                                @else
+                                <span class="text-muted">-</span>
+                                @endif
                             </td>
                             <td style="border: none; padding: 16px 12px; font-weight: 600; color: #495057;">{{ $warranty->purchase_date->format('d/m/Y') }}</td>
                             <td style="border: none; padding: 16px 12px;">
@@ -278,6 +290,16 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
+                <div class="alert alert-info mb-3">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2"></i>Hướng dẫn format file Excel:</h6>
+                    <ul class="mb-0 small">
+                        <li><strong>SERI</strong> (bắt buộc): Số seri sản phẩm</li>
+                        <li><strong>CÔNG TY</strong> (tùy chọn): Tên khách hàng/công ty</li>
+                        <li><strong>NGÀY</strong> (tùy chọn): Ngày mua và ngày bắt đầu bảo hành (format: dd/mm/yyyy, ví dụ: 31/08/2023)</li>
+                        <li><strong>Số lượng</strong>: Cột này sẽ được bỏ qua, không xử lý</li>
+                    </ul>
+                    <p class="mb-0 mt-2 small"><strong>Lưu ý:</strong> Thời hạn bảo hành sẽ tự động là 12 tháng. Nếu không có ngày, hệ thống sẽ dùng ngày hiện tại.</p>
+                </div>
                 <form action="{{ route('admin.warranties.importExcel') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">

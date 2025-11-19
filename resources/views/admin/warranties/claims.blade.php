@@ -137,11 +137,17 @@
                             </td>
                             <td>
                                 <strong>{{ $claim->warranty->serial_number }}</strong>
+                                @if($claim->warranty->product)
                                 <br><small class="text-muted">{{ $claim->warranty->product->name }}</small>
+                                @endif
                             </td>
                             <td>
+                                @if($claim->warranty->customer_name)
                                 <strong>{{ $claim->warranty->customer_name }}</strong>
+                                @endif
+                                @if($claim->warranty->customer_phone)
                                 <br><small class="text-muted">{{ $claim->warranty->customer_phone }}</small>
+                                @endif
                             </td>
                             <td>{{ $claim->claim_date->format('d/m/Y') }}</td>
                             <td>

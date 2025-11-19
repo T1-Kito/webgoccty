@@ -33,6 +33,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Sản phẩm:</label>
+                        @if($warranty->product)
                         <div class="d-flex align-items-center">
                             @if($warranty->product->image)
                                 <img src="{{ asset('images/products/' . $warranty->product->image) }}" 
@@ -44,11 +45,16 @@
                                 <small class="text-muted">{{ $warranty->product->category->name ?? '' }}</small>
                             </div>
                         </div>
+                        @else
+                        <p class="mb-0 text-muted">-</p>
+                        @endif
                     </div>
+                    @if($warranty->customer_name)
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Khách hàng:</label>
                         <p class="mb-0 fs-5">{{ $warranty->customer_name }}</p>
                     </div>
+                    @endif
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -93,12 +99,12 @@
                         
                         <div class="mb-3">
                             <label for="customer_company" class="form-label fw-bold">Tên công ty <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="customer_company" name="customer_company" value="{{ $warranty->customer_name }}" required>
+                            <input type="text" class="form-control" id="customer_company" name="customer_company" value="{{ $warranty->customer_name ?? '' }}" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="contact_person" class="form-label fw-bold">Người liên hệ <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="contact_person" name="contact_person" value="{{ $warranty->customer_name }}" required>
+                            <input type="text" class="form-control" id="contact_person" name="contact_person" value="{{ $warranty->customer_name ?? '' }}" required>
                         </div>
 
                         <div class="mb-3">
@@ -138,7 +144,7 @@
                         
                         <div class="mb-3">
                             <label for="equipment_name" class="form-label fw-bold">Tên thiết bị <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="equipment_name" name="equipment_name" value="{{ $warranty->product->name }}" required>
+                            <input type="text" class="form-control" id="equipment_name" name="equipment_name" value="{{ $warranty->product->name ?? '' }}" required>
                         </div>
 
                         <div class="mb-3">

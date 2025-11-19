@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Sản phẩm *</label>
+                                    <label class="form-label fw-bold">Sản phẩm</label>
                                     <div class="d-flex gap-2 mb-2">
                                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleProductSelect()">
                                             <i class="bi bi-list-check"></i> Chọn sản phẩm có sẵn
@@ -67,15 +67,17 @@
                                         <button type="button" class="btn btn-sm btn-outline-success" onclick="toggleProductInput()">
                                             <i class="bi bi-plus-circle"></i> Tạo sản phẩm mới
                                         </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearProduct()">
+                                            <i class="bi bi-x-circle"></i> Không chọn
+                                        </button>
                                     </div>
                                     
                                     <!-- Phần chọn sản phẩm có sẵn -->
                                     <div id="product-select-section">
                                         <select class="form-select select2-product @error('product_id') is-invalid @enderror" 
                                                 id="product_id" 
-                                                name="product_id" 
-                                                required>
-                                            <option value="">Tìm kiếm sản phẩm...</option>
+                                                name="product_id">
+                                            <option value="">Không chọn sản phẩm (chỉ dùng số seri)</option>
                                             @foreach($products as $product)
                                                 <option value="{{ $product->id }}" 
                                                         {{ old('product_id') == $product->id ? 'selected' : '' }}
@@ -127,13 +129,12 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="customer_name" class="form-label fw-bold">Tên khách hàng *</label>
+                                    <label for="customer_name" class="form-label fw-bold">Tên khách hàng</label>
                                     <input type="text" 
                                            class="form-control @error('customer_name') is-invalid @enderror" 
                                            id="customer_name" 
                                            name="customer_name" 
-                                           value="{{ old('customer_name') }}" 
-                                           required>
+                                           value="{{ old('customer_name') }}">
                                     @error('customer_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -400,14 +401,23 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('product-select-section').style.display = 'none';
         document.getElementById('product-create-section').style.display = 'block';
         document.getElementById('product_id').removeAttribute('required');
-        document.getElementById('new_product_name').setAttribute('required', 'required');
+        document.getElementById('new_product_name').removeAttribute('required');
     };
     
     window.toggleProductSelect = function() {
         document.getElementById('product-select-section').style.display = 'block';
         document.getElementById('product-create-section').style.display = 'none';
-        document.getElementById('product_id').setAttribute('required', 'required');
+        document.getElementById('product_id').removeAttribute('required');
         document.getElementById('new_product_name').removeAttribute('required');
+    };
+    
+    window.clearProduct = function() {
+        document.getElementById('product-select-section').style.display = 'block';
+        document.getElementById('product-create-section').style.display = 'none';
+        document.getElementById('product_id').value = '';
+        $('.select2-product').val(null).trigger('change');
+        document.getElementById('new_product_name').value = '';
+        document.getElementById('new_product_image').value = '';
     };
     
     // Auto-calculate warranty end date

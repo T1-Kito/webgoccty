@@ -188,14 +188,18 @@
                         <label class="fw-bold text-muted">Số seri:</label>
                         <p class="mb-0">{{ $repairForm->warranty->serial_number }}</p>
                     </div>
+                    @if($repairForm->warranty->product)
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Sản phẩm:</label>
                         <p class="mb-0">{{ $repairForm->warranty->product->name }}</p>
                     </div>
+                    @endif
+                    @if($repairForm->warranty->customer_name)
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Khách hàng:</label>
                         <p class="mb-0">{{ $repairForm->warranty->customer_name }}</p>
                     </div>
+                    @endif
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Trạng thái:</label>
                         <span class="badge bg-{{ $repairForm->warranty->warranty_status_color }}">

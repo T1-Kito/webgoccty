@@ -39,10 +39,12 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    @if($warranty->product)
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Sản phẩm:</label>
                         <p class="mb-0">{{ $warranty->product->name }}</p>
                     </div>
+                    @endif
                     <div class="mb-3">
                         <label class="fw-bold text-muted">Số seri:</label>
                         <p class="mb-0">{{ $warranty->serial_number }}</p>
@@ -139,7 +141,7 @@
                         <div class="mb-3">
                             <label for="equipment_name" class="form-label">Tên thiết bị <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="equipment_name" name="equipment_name" 
-                                   value="{{ old('equipment_name', $warranty->product->name) }}" required>
+                                   value="{{ old('equipment_name', $warranty->product->name ?? '') }}" required>
                         </div>
 
                         <div class="mb-3">

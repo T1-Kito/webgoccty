@@ -41,10 +41,10 @@
                                         data-customer="{{ $warranty->customer_name }}"
                                         data-phone="{{ $warranty->customer_phone }}"
                                         data-email="{{ $warranty->customer_email }}"
-                                        data-product="{{ $warranty->product->name }}"
+                                        data-product="{{ $warranty->product->name ?? '' }}"
                                         data-serial="{{ $warranty->serial_number }}"
                                         data-purchase="{{ $warranty->purchase_date->format('Y-m-d') }}">
-                                        {{ $warranty->serial_number }} - {{ $warranty->product->name }} ({{ $warranty->customer_name }})
+                                        {{ $warranty->serial_number }}@if($warranty->product) - {{ $warranty->product->name }}@endif@if($warranty->customer_name) ({{ $warranty->customer_name }})@endif
                                     </option>
                                 @endforeach
                             </select>
@@ -56,7 +56,7 @@
                                 <option value="">Chọn yêu cầu bảo hành (nếu có)</option>
                                 @foreach($warrantyClaims as $claim)
                                     <option value="{{ $claim->id }}" {{ $repairForm->warranty_claim_id == $claim->id ? 'selected' : '' }}>
-                                        {{ $claim->claim_number }} - {{ $claim->warranty->product->name }}
+                                        {{ $claim->claim_number }}@if($claim->warranty->product) - {{ $claim->warranty->product->name }}@endif
                                     </option>
                                 @endforeach
                             </select>

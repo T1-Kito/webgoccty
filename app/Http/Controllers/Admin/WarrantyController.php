@@ -45,7 +45,7 @@ class WarrantyController extends Controller
             'product_id' => 'nullable|exists:products,id',
             'new_product_name' => 'nullable|string|max:255',
             'new_product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'customer_name' => 'required|string|max:255',
+            'customer_name' => 'nullable|string|max:255',
             'customer_phone' => 'nullable|string|max:20',
             'customer_email' => 'nullable|email|max:255',
             'customer_address' => 'nullable|string|max:500',
@@ -93,8 +93,8 @@ class WarrantyController extends Controller
         // Tự động xác định trạng thái bảo hành
         $data['status'] = $data['warranty_end_date'] >= now()->toDateString() ? 'active' : 'expired';
 
-        // Cập nhật product_id
-        $data['product_id'] = $productId;
+        // Cập nhật product_id (có thể null nếu không chọn sản phẩm)
+        $data['product_id'] = $productId ?? null;
 
         $warranty = Warranty::create($data);
 
@@ -130,9 +130,9 @@ class WarrantyController extends Controller
     {
         $data = $request->validate([
             'serial_number' => 'required|string|max:255|unique:warranties,serial_number,' . $warranty->id,
-            'product_id' => 'required|exists:products,id',
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
+            'product_id' => 'nullable|exists:products,id',
+            'customer_name' => 'nullable|string|max:255',
+            'customer_phone' => 'nullable|string|max:20',
             'customer_email' => 'nullable|email|max:255',
             'customer_address' => 'nullable|string|max:500',
             'purchase_date' => 'required|date',

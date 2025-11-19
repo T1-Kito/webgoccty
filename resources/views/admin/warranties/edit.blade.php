@@ -55,12 +55,11 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="product_id" class="form-label fw-bold">Sản phẩm *</label>
+                                    <label for="product_id" class="form-label fw-bold">Sản phẩm</label>
                                     <select class="form-select select2-product @error('product_id') is-invalid @enderror" 
                                             id="product_id" 
-                                            name="product_id" 
-                                            required>
-                                        <option value="">Tìm kiếm sản phẩm...</option>
+                                            name="product_id">
+                                        <option value="">Không chọn sản phẩm (chỉ dùng số seri)</option>
                                         @foreach($products as $product)
                                             <option value="{{ $product->id }}" 
                                                     {{ old('product_id', $warranty->product_id) == $product->id ? 'selected' : '' }}
@@ -89,13 +88,12 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="customer_name" class="form-label fw-bold">Tên khách hàng *</label>
+                                    <label for="customer_name" class="form-label fw-bold">Tên khách hàng</label>
                                     <input type="text" 
                                            class="form-control @error('customer_name') is-invalid @enderror" 
                                            id="customer_name" 
                                            name="customer_name" 
-                                           value="{{ old('customer_name', $warranty->customer_name) }}" 
-                                           required>
+                                           value="{{ old('customer_name', $warranty->customer_name) }}">
                                     @error('customer_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -103,13 +101,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="customer_phone" class="form-label fw-bold">Số điện thoại *</label>
+                                    <label for="customer_phone" class="form-label fw-bold">Số điện thoại</label>
                                     <input type="text" 
                                            class="form-control @error('customer_phone') is-invalid @enderror" 
                                            id="customer_phone" 
                                            name="customer_phone" 
-                                           value="{{ old('customer_phone', $warranty->customer_phone) }}" 
-                                           required>
+                                           value="{{ old('customer_phone', $warranty->customer_phone) }}">
                                     @error('customer_phone')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

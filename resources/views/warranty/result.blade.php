@@ -81,7 +81,9 @@
                                 <h4 class="fw-bold mb-1">
                                     <i class="bi bi-info-circle"></i> Thông tin bảo hành
                                 </h4>
+                                @if($warranty->product)
                                 <p class="mb-0 opacity-75">Sản phẩm: {{ $warranty->product->name }}</p>
+                                @endif
                             </div>
                             <div class="text-end">
                                 <span class="badge bg-{{ $warranty->warranty_status_color }} fs-6 px-3 py-2">
@@ -97,14 +99,24 @@
                                     <label class="fw-bold text-muted">Số seri:</label>
                                     <p class="mb-0 fs-5">{{ $warranty->serial_number }}</p>
                                 </div>
+                                @if($warranty->product)
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">Sản phẩm:</label>
+                                    <p class="mb-0 fs-5">{{ $warranty->product->name }}</p>
+                                </div>
+                                @endif
+                                @if($warranty->customer_name)
                                 <div class="mb-3">
                                     <label class="fw-bold text-muted">Khách hàng:</label>
                                     <p class="mb-0 fs-5">{{ $warranty->customer_name }}</p>
                                 </div>
+                                @endif
+                                @if($warranty->customer_phone)
                                 <div class="mb-3">
                                     <label class="fw-bold text-muted">Số điện thoại:</label>
                                     <p class="mb-0 fs-5">{{ $warranty->customer_phone }}</p>
                                 </div>
+                                @endif
                                 @if($warranty->customer_email)
                                 <div class="mb-3">
                                     <label class="fw-bold text-muted">Email:</label>

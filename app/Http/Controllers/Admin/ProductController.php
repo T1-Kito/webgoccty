@@ -63,6 +63,19 @@ class ProductController extends Controller
             'instruction' => 'nullable',
             'is_featured' => 'nullable|boolean',
             'status' => 'nullable|boolean',
+        ], [
+            'name.required' => 'Bạn chưa nhập tên sản phẩm. Vui lòng nhập tên sản phẩm!',
+            'category_id.required' => 'Bạn chưa chọn danh mục. Vui lòng chọn danh mục sản phẩm!',
+            'category_id.exists' => 'Danh mục bạn chọn không tồn tại. Vui lòng chọn lại!',
+            'price.required' => 'Bạn chưa nhập giá sản phẩm. Vui lòng nhập giá!',
+            'price.numeric' => 'Giá sản phẩm phải là số. Vui lòng nhập lại!',
+            'discount_percent.integer' => 'Phần trăm giảm giá phải là số nguyên!',
+            'discount_percent.min' => 'Phần trăm giảm giá không được nhỏ hơn 0%!',
+            'discount_percent.max' => 'Phần trăm giảm giá không được lớn hơn 100%!',
+            'image.image' => 'File ảnh không đúng định dạng. Vui lòng chọn file ảnh (jpg, png, gif)!',
+            'additional_images.*.image' => 'Một trong các ảnh bổ sung không đúng định dạng!',
+            'additional_images.*.mimes' => 'Ảnh bổ sung phải là định dạng jpeg, png, jpg hoặc gif!',
+            'additional_images.*.max' => 'Kích thước ảnh bổ sung không được vượt quá 2MB!',
         ]);
         $data['slug'] = Str::slug($data['name']);
         if ($request->hasFile('image')) {
@@ -158,6 +171,19 @@ class ProductController extends Controller
             'instruction' => 'nullable',
             'is_featured' => 'nullable|boolean',
             'status' => 'nullable|boolean',
+        ], [
+            'name.required' => 'Bạn chưa nhập tên sản phẩm. Vui lòng nhập tên sản phẩm!',
+            'category_id.required' => 'Bạn chưa chọn danh mục. Vui lòng chọn danh mục sản phẩm!',
+            'category_id.exists' => 'Danh mục bạn chọn không tồn tại. Vui lòng chọn lại!',
+            'price.required' => 'Bạn chưa nhập giá sản phẩm. Vui lòng nhập giá!',
+            'price.numeric' => 'Giá sản phẩm phải là số. Vui lòng nhập lại!',
+            'discount_percent.integer' => 'Phần trăm giảm giá phải là số nguyên!',
+            'discount_percent.min' => 'Phần trăm giảm giá không được nhỏ hơn 0%!',
+            'discount_percent.max' => 'Phần trăm giảm giá không được lớn hơn 100%!',
+            'image.image' => 'File ảnh không đúng định dạng. Vui lòng chọn file ảnh (jpg, png, gif)!',
+            'additional_images.*.image' => 'Một trong các ảnh bổ sung không đúng định dạng!',
+            'additional_images.*.mimes' => 'Ảnh bổ sung phải là định dạng jpeg, png, jpg hoặc gif!',
+            'additional_images.*.max' => 'Kích thước ảnh bổ sung không được vượt quá 2MB!',
         ]);
         $data['slug'] = Str::slug($data['name']);
         if ($request->hasFile('image')) {
