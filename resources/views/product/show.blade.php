@@ -1129,30 +1129,32 @@
 @endsection
 
 <!-- Modal xem lớn ảnh (full screen + zoom) -->
-<div class="modal fade" id="productImageModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="productImageModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
   <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content" style="background:transparent; border:none; box-shadow:none;">
+    <div class="modal-content" style="background:rgba(0,0,0,0.9); border:none; box-shadow:none;">
       <div class="modal-body p-0 d-flex justify-content-center align-items-center position-relative" style="min-height:100vh;">
-        <!-- Close button -->
-        <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal" aria-label="Close" style="top:24px; right:24px; z-index:10; font-size:2em; background:none; border:none; color:#fff;"></button>
+        <!-- Control buttons group - Top right corner -->
+        <div class="position-absolute" style="top:20px; right:20px; z-index:1050; display:flex; gap:8px; align-items:center; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:30px;">
+          <!-- Zoom controls -->
+          <button id="zoomOutBtn" type="button" class="btn btn-light btn-sm" style="border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; padding:0; opacity:0.9;" title="Thu nhỏ">-</button>
+          <button id="zoomInBtn" type="button" class="btn btn-light btn-sm" style="border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; padding:0; opacity:0.9;" title="Phóng to">+</button>
+          <!-- Close button -->
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="margin-left:4px; opacity:1; font-size:1.2em; width:36px; height:36px;"></button>
+        </div>
         
         <!-- Navigation buttons -->
         @if($product->images && $product->images->count() > 0)
-          <button id="prevBtn" type="button" class="btn btn-light position-absolute" style="left:24px; top:50%; transform:translateY(-50%); z-index:10; font-size:1.5em; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;" onclick="prevImage()">
+          <button id="prevBtn" type="button" class="btn btn-light position-absolute" style="left:24px; top:50%; transform:translateY(-50%); z-index:1050; font-size:1.5em; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; opacity:0.9; box-shadow:0 2px 8px rgba(0,0,0,0.3);" onclick="prevImage()" title="Ảnh trước">
             <i class="bi bi-chevron-left"></i>
           </button>
-          <button id="nextBtn" type="button" class="btn btn-light position-absolute" style="right:24px; top:50%; transform:translateY(-50%); z-index:10; font-size:1.5em; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;" onclick="nextImage()">
+          <button id="nextBtn" type="button" class="btn btn-light position-absolute" style="right:24px; top:50%; transform:translateY(-50%); z-index:1050; font-size:1.5em; border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; opacity:0.9; box-shadow:0 2px 8px rgba(0,0,0,0.3);" onclick="nextImage()" title="Ảnh sau">
             <i class="bi bi-chevron-right"></i>
           </button>
         @endif
         
-        <!-- Zoom controls -->
-        <button id="zoomInBtn" type="button" class="btn btn-light position-absolute" style="top:24px; right:80px; z-index:10; font-size:1.5em; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">+</button>
-        <button id="zoomOutBtn" type="button" class="btn btn-light position-absolute" style="top:24px; right:130px; z-index:10; font-size:1.5em; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">-</button>
-        
         <!-- Image counter -->
         @if($product->images && $product->images->count() > 0)
-          <div class="position-absolute" style="bottom:24px; left:50%; transform:translateX(-50%); z-index:10; background:rgba(0,0,0,0.7); color:#fff; padding:8px 16px; border-radius:20px; font-size:0.9em;">
+          <div class="position-absolute" style="bottom:24px; left:50%; transform:translateX(-50%); z-index:1050; background:rgba(0,0,0,0.7); color:#fff; padding:8px 16px; border-radius:20px; font-size:0.9em;">
             <span id="imageCounter">1</span> / <span>{{ $product->images->count() + 1 }}</span>
           </div>
         @endif
@@ -1163,22 +1165,6 @@
   </div>
 </div>
 
-<!-- Modal phóng to ảnh sản phẩm -->
-<div class="modal fade" id="zoomImageModal" tabindex="-1" aria-labelledby="zoomImageModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="background:rgba(0,0,0,0.85); border:none; box-shadow:none;">
-      <div class="modal-body p-0 position-relative text-center">
-        <div style="position:absolute; top:18px; right:28px; z-index:10; display:flex; gap:12px; align-items:center;">
-          <button id="zoomToggleBtn" type="button" class="btn btn-light btn-sm" style="border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:1.5em; opacity:0.92;">
-            <i class="bi bi-arrows-fullscreen" id="zoomToggleIcon"></i>
-          </button>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="font-size:2em;"></button>
-        </div>
-        <img id="zoomedProductImage" src="" alt="Ảnh phóng to" class="img-fluid rounded" style="max-height:90vh; max-width:98vw; margin:auto; display:block; box-shadow:0 4px 32px rgba(0,0,0,0.18); transition:transform 0.25s;">
-      </div>
-    </div>
-  </div>
-</div>
 
 @push('scripts')
 <script>
@@ -1295,10 +1281,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var modalImg = document.getElementById('modalProductImage');
     var zoom = 1;
     
-    // Click on main image to open modal
-    document.getElementById('mainProductImage').addEventListener('click', function() {
-        openImageModal();
-    });
+    // Click on main image to open modal - chỉ gắn một lần
+    var mainImg = document.getElementById('mainProductImage');
+    if(mainImg) {
+        mainImg.style.cursor = 'zoom-in';
+        mainImg.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openImageModal();
+        });
+    }
     
     // Zoom controls
     document.getElementById('zoomInBtn').onclick = function() {
@@ -1331,53 +1323,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Alternative zoom modal functionality
-    (function(){
-        var zoomModalEl = document.getElementById('zoomImageModal');
-        var zoomModal = null;
-        var zoomImg = document.getElementById('zoomedProductImage');
-        var zoomBtn = document.getElementById('zoomToggleBtn');
-        var zoomIcon = document.getElementById('zoomToggleIcon');
-        var isZoomed = false;
-        
-        if(window.bootstrap && window.bootstrap.Modal && zoomModalEl) {
-            zoomModal = bootstrap.Modal.getOrCreateInstance(zoomModalEl);
-        }
-        
-        // Click on main image for alternative zoom
-        var mainImg = document.getElementById('mainProductImage');
-        if(mainImg) {
-            mainImg.style.cursor = 'zoom-in';
-            mainImg.onclick = function() {
-                zoomImg.src = this.src;
-                zoomModal.show();
-            };
-        }
-        
-
-        
-        // Reset when modal is closed
-        zoomModalEl.addEventListener('hidden.bs.modal', function(){
-            zoomImg.src = '';
-            zoomImg.style.transform = 'scale(1)';
-            isZoomed = false;
-            zoomIcon.className = 'bi bi-arrows-fullscreen';
-        });
-        
-        // Toggle zoom button
-        if(zoomBtn) {
-            zoomBtn.onclick = function() {
-                isZoomed = !isZoomed;
-                if(isZoomed) {
-                    zoomImg.style.transform = 'scale(1.7)';
-                    zoomIcon.className = 'bi bi-arrows-angle-contract';
-                } else {
-                    zoomImg.style.transform = 'scale(1)';
-                    zoomIcon.className = 'bi bi-arrows-fullscreen';
-                }
-            };
-        }
-    })();
 
     // Xử lý chức năng "Xem thêm" cho mô tả sản phẩm
     function initDescriptionToggle() {
