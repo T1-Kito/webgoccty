@@ -196,6 +196,80 @@
 <style>
   /* XÓA html { zoom: 0.9; } để tránh lỗi mobile */
 </style>
+<!-- Hiệu ứng tuyết rơi Noel -->
+<style>
+  #snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    overflow: hidden;
+  }
+  .snowflake {
+    position: absolute;
+    top: -50px;
+    background-image: url('{{ asset("images/snow/snowflake.jpg") }}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: snowfall linear;
+  }
+  @keyframes snowfall {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(100vh) translateX(var(--drift)) rotate(720deg);
+      opacity: 0.3;
+    }
+  }
+  /* Nút tắt/bật tuyết */
+  #snow-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e30019;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    font-size: 24px;
+  }
+  #snow-toggle:hover {
+    background: #e30019;
+    color: white;
+    transform: scale(1.1);
+  }
+  #snow-toggle.active {
+    background: #e30019;
+    color: white;
+  }
+  @media (max-width: 768px) {
+    #snow-toggle {
+      width: 40px;
+      height: 40px;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+    }
+  }
+</style>
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column; background: #F4F6FA;">
     <!-- Tạm thời comment out để test -->
@@ -327,6 +401,90 @@
         });
     </script>
     @endif
+    <!-- Hiệu ứng tuyết rơi Noel -->
+    <div id="snow-container"></div>
+    <button id="snow-toggle" title="Tắt/Bật tuyết rơi">❄️</button>
+    <script>
+      (function() {
+        const snowContainer = document.getElementById('snow-container');
+        const toggleBtn = document.getElementById('snow-toggle');
+        let snowActive = true;
+        let snowflakes = [];
+        
+        // Tạo bông tuyết
+        function createSnowflake() {
+          if (!snowActive) return;
+          
+          const snowflake = document.createElement('div');
+          snowflake.className = 'snowflake';
+          
+          // Kích thước ngẫu nhiên (20px - 50px)
+          const size = Math.random() * 30 + 20;
+          snowflake.style.width = size + 'px';
+          snowflake.style.height = size + 'px';
+          
+          // Vị trí ngẫu nhiên từ trên
+          snowflake.style.left = Math.random() * 100 + '%';
+          
+          // Tốc độ rơi ngẫu nhiên (8s - 15s)
+          const fallDuration = Math.random() * 7 + 8;
+          snowflake.style.animationDuration = fallDuration + 's';
+          
+          // Độ lệch ngang khi rơi
+          const drift = (Math.random() - 0.5) * 200;
+          snowflake.style.setProperty('--drift', drift + 'px');
+          
+          // Độ mờ ngẫu nhiên
+          snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+          
+          snowContainer.appendChild(snowflake);
+          snowflakes.push(snowflake);
+          
+          // Xóa bông tuyết sau khi rơi xong
+          setTimeout(() => {
+            if (snowflake.parentNode) {
+              snowflake.parentNode.removeChild(snowflake);
+            }
+            const index = snowflakes.indexOf(snowflake);
+            if (index > -1) {
+              snowflakes.splice(index, 1);
+            }
+          }, fallDuration * 1000);
+        }
+        
+        // Tạo tuyết liên tục
+        function startSnow() {
+          if (!snowActive) return;
+          createSnowflake();
+          // Tạo bông tuyết mới mỗi 300-800ms
+          setTimeout(startSnow, Math.random() * 500 + 300);
+        }
+        
+        // Tắt/bật tuyết
+        toggleBtn.addEventListener('click', function() {
+          snowActive = !snowActive;
+          toggleBtn.classList.toggle('active', snowActive);
+          
+          if (snowActive) {
+            startSnow();
+          } else {
+            // Xóa tất cả bông tuyết
+            snowflakes.forEach(flake => {
+              if (flake.parentNode) {
+                flake.parentNode.removeChild(flake);
+              }
+            });
+            snowflakes = [];
+          }
+        });
+        
+        // Bắt đầu hiệu ứng khi trang load
+        if (snowActive) {
+          toggleBtn.classList.add('active');
+          startSnow();
+        }
+      })();
+    </script>
     <!-- Floating User Button & Menu -->
     <div id="floating-user-menu-root">
         <div id="floating-user-btn" onclick="toggleUserMenu()">
